@@ -84,9 +84,13 @@ if command -v docker >/dev/null 2>&1; then
   fi
 
   # Detectar si Swarm está activo o usar docker compose
-  if docker info 2>/dev/null | grep -q "Swarm: active"; then
+  IS_SWARM=false
+  if docker node ls >/dev/null 2>&1 || docker stack ls >/dev/null 2>&1 || docker info --format '{{.Swarm.LocalNodeState}}' 2>/dev/null | grep -qi "active"; then
+    IS_SWARM=true
+  fi
+
+  if [ "$IS_SWARM" = "true" ]; then
     cyan "── 6. Desplegando en Docker Swarm con Traefik ──"
-    docker service rollback "${STACK_NAME}_ganador" >/dev/null 2>&1 || true
     docker stack deploy --resolve-image never -c docker-compose.yml "$STACK_NAME"
     docker service update --force --image ganador:latest "${STACK_NAME}_ganador" 2>/dev/null || true
     sleep 3
@@ -94,7 +98,10 @@ if command -v docker >/dev/null 2>&1; then
     green "✔ Servicio Swarm '${STACK_NAME}_ganador' enlazado a Traefik en elojoganador.com."
   else
     cyan "── 6. Desplegando con Docker Compose estándar + Traefik ──"
-    docker compose up -d --build --remove-orphans
+    docker compose up -d --build --remove-orphans || {
+      yellow "Aviso: Reintentando despliegue directo con Docker Swarm Stack..."
+      docker stack deploy --resolve-image never -c docker-compose.yml "$STACK_NAME"
+    }
     green "✔ Contenedor ganador enlazado con Traefik en elojoganador.com."
   fi
 fi

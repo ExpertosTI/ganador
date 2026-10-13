@@ -448,10 +448,16 @@ export const ComingSoonLanding = ({
       {/* Footer */}
       <footer className="relative z-10 border-t border-white/5 py-4 px-6 text-center text-xs text-slate-500">
         <div className="flex flex-col sm:flex-row items-center justify-between max-w-4xl mx-auto gap-2">
-          <span>&copy; {new Date().getFullYear()} GANADOR. Todos los derechos reservados.</span>
-          <span className="font-mono text-[10px] text-slate-600">
-            Desarrollado con el ecosistema RENACE & Odoo ERP
-          </span>
+          <span>&copy; {new Date().getFullYear()} EL OJO GANADOR. Todos los derechos reservados.</span>
+          <a 
+            href="https://renace.tech" 
+            target="_blank" 
+            rel="noreferrer"
+            className="text-[9px] font-mono text-zinc-600/50 hover:text-zinc-400 opacity-40 hover:opacity-100 transition-opacity tracking-wider"
+            title="Tecnología por RENACE"
+          >
+            hecho por renace
+          </a>
         </div>
       </footer>
     </div>

@@ -254,10 +254,19 @@ export const Footer = ({ onSelectCategory }) => {
         {/* Copyright */}
         <div className="border-t border-mvp-cardHover/60 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left text-[11px] text-mvp-muted">
           <p>© {new Date().getFullYear()} EL OJO GANADOR (elojoganador.com) • Todos los derechos reservados.</p>
-          <p className="flex items-center justify-center gap-1">
-            <span>Drops exclusivos de ropa urbana en República Dominicana</span>
-            <Heart size={12} className="text-red-500 fill-red-500" />
-          </p>
+          <div className="flex items-center justify-center sm:justify-end gap-2">
+            <span>Drops exclusivos en RD</span>
+            <span className="text-zinc-700">·</span>
+            <a 
+              href="https://renace.tech" 
+              target="_blank" 
+              rel="noreferrer"
+              className="text-[9px] font-mono text-zinc-600/50 hover:text-zinc-400 opacity-40 hover:opacity-100 transition-opacity tracking-wider"
+              title="Tecnología por RENACE"
+            >
+              hecho por renace
+            </a>
+          </div>
         </div>
       </div>
     </footer>
