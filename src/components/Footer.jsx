@@ -181,6 +181,12 @@ export const Footer = ({ onSelectCategory }) => {
                 </a>
               </li>
               <li>
+                <a href="tel:8494369724" className="hover:text-mvp-red transition-colors flex items-center gap-1.5 text-white font-bold font-mono">
+                  <Phone size={13} className="text-emerald-400" />
+                  <span>(849) 436-9724 (Herrera)</span>
+                </a>
+              </li>
+              <li>
                 <a href="https://wa.me/18094918466" target="_blank" rel="noreferrer" className="hover:text-mvp-red transition-colors flex items-center gap-1.5 text-emerald-400 font-mono text-[11px]">
                   <MessageCircle size={13} />
                   <span>WS Envíos: (809) 491-8466</span>
