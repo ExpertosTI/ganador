@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  ganador:
+    image: ganador:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - STORE_NAME=EL OJO GANADOR
+      - STORE_DOMAIN=elojoganador.com
+      - STORE_WHATSAPP_PHONE=18293759724
+      - WHATICKET_API_URL=https://api.whaticket.com/api/v1
+      - WHATICKET_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6WyJjcmVhdGU6bWVzc2FnZXMiLCJjcmVhdGU6bWVkaWFzIiwicmVhZDp3aGF0c2FwcHMiLCJ1cGRhdGU6d2hhdHNhcHBzIiwiY3JlYXRlOmNvbnRhY3RzIiwicmVhZDpjb250YWN0cyJdLCJjb21wYW55SWQiOiIxYjZmMzk1OC05NTExLTRiYzUtOTRkNy04YmE2ZTI2MDYxYTUiLCJpYXQiOjE3ODc4Nzc3MTB9.igKUXGwsEUCqSWhZxgWkpghAmCasRJ9EgazyZUFHr-M
+      - WHATICKET_COMPANY_ID=1b6f3958-9511-4bc5-94d7-8ba6e26061a5
+      - WHATICKET_CONNECTION_ID=b24ea8c3-f5ed-46de-b612-dbe8f76e53c8
+      - ODOO_URL=https://mvpflow.renace.tech
+      - ODOO_DB=mvpflow
+      - ODOO_USERNAME=info@mvpflowboutique.com
+      - ODOO_API_KEY=abf6067a002549afa0b3b5a6c925d78262658f5c
+      - JWT_SECRET=ganador_jwt_secret_token_2026_xyz
+    volumes:
+      - /var/www/ganador/server/data:/app/server/data
+    networks:
+      - RenaceNet
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=RenaceNet
+      
+      # HTTP -> HTTPS Redirect
+      - traefik.http.routers.ganador-http.rule=Host(`elojoganador.com`) || Host(`www.elojoganador.com`)
+      - traefik.http.routers.ganador-http.entrypoints=web
+      - traefik.http.routers.ganador-http.middlewares=ganador-https-redirect
+      - traefik.http.middlewares.ganador-https-redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.ganador-https-redirect.redirectscheme.permanent=true
+
+      # HTTPS Router
+      - traefik.http.routers.ganador-web.rule=Host(`elojoganador.com`) || Host(`www.elojoganador.com`)
+      - traefik.http.routers.ganador-web.entrypoints=websecure
+      - traefik.http.routers.ganador-web.tls=true
+      - traefik.http.routers.ganador-web.tls.certresolver=letsencryptresolver
+      - traefik.http.routers.ganador-web.service=ganador-svc
+
+      # Service Port
+      - traefik.http.services.ganador-svc.loadbalancer.server.port=3000
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 5s
+        order: start-first
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=RenaceNet
+        
+        # HTTP -> HTTPS Redirect
+        - traefik.http.routers.ganador-http.rule=Host(`elojoganador.com`) || Host(`www.elojoganador.com`)
+        - traefik.http.routers.ganador-http.entrypoints=web
+        - traefik.http.routers.ganador-http.middlewares=ganador-https-redirect
+        - traefik.http.middlewares.ganador-https-redirect.redirectscheme.scheme=https
+        - traefik.http.middlewares.ganador-https-redirect.redirectscheme.permanent=true
+
+        # HTTPS Router
+        - traefik.http.routers.ganador-web.rule=Host(`elojoganador.com`) || Host(`www.elojoganador.com`)
+        - traefik.http.routers.ganador-web.entrypoints=websecure
+        - traefik.http.routers.ganador-web.tls=true
+        - traefik.http.routers.ganador-web.tls.certresolver=letsencryptresolver
+        - traefik.http.routers.ganador-web.service=ganador-svc
+
+        # Loadbalancer Port
+        - traefik.http.services.ganador-svc.loadbalancer.server.port=3000
+
+networks:
+  RenaceNet:
+    external: true
